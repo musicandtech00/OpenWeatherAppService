@@ -13,3 +13,4 @@ Going beyond Prototype:
   -Re-factor network service. Rite now it's setup for only one endpont. Scale this. 
   -Isolate the view's
   -Option of adding some navigation design.
+  -Add the ability to log out.
