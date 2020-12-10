@@ -14,6 +14,18 @@ class KeyChainManager {
         keyChain["accessToken"] != nil
     }
     
+    func logOut() {
+        keyChain["accessToken"] = nil
+    }
+    
+    func resetToken() {
+        do {
+            try keyChain.remove("accessToken")
+        } catch let error {
+            print("error: \(error)")
+        }
+    }
+    
     static let shared = KeyChainManager()
     
     private let keyChain = Keychain(service: "com.curtiswiseman.openweatherappservice")

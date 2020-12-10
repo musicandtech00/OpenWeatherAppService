@@ -39,6 +39,14 @@ class AddLocationViewController: UIViewController {
         return imageView
     }()
     
+    private lazy var logoutButton: UIButton = {
+        let button = UIButton()
+        button.backgroundColor = .blue
+        button.addTarget(self, action: #selector(didTapLogout), for: .touchUpInside)
+        button.setTitle("SIGN OUT", for: .normal)
+        return button
+    }()
+    
     private let activityIndicatorView = UIActivityIndicatorView()
     
     private var viewModel: AddLocationViewModel!
@@ -75,6 +83,12 @@ class AddLocationViewController: UIViewController {
         view.addSubview(temperatureLabel)
         view.addSubview(cityLabel)
         view.addSubview(activityIndicatorView)
+        view.addSubview(logoutButton)
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        logoutButton.layer.cornerRadius = logoutButton.frame.height / 2
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -111,6 +125,12 @@ class AddLocationViewController: UIViewController {
             searchBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             searchBar.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor)
         ])
+        
+        logoutButton.activateConstraints([
+            logoutButton.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            logoutButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
+            logoutButton.heightAnchor.constraint(equalToConstant: 40)
+        ])
     }
     
     private func setupViewModelObserver() {
@@ -131,6 +151,17 @@ class AddLocationViewController: UIViewController {
         
         viewModel.querying = { [weak self] isQuerying in
             isQuerying ? self?.activityIndicatorView.startAnimating() : self?.activityIndicatorView.stopAnimating()
+        }
+    }
+    
+    @objc private func didTapLogout() {
+        KeyChainManager.shared.resetToken()
+        
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+          let sceneDelegate = windowScene.delegate as? SceneDelegate
+        {
+            let loginVC = LoginViewController()
+            sceneDelegate.window?.rootViewController = loginVC
         }
     }
 }
